@@ -23,29 +23,44 @@ def zql_generator(hypervisorType, zoneUuid):
         host_conditions += " and zoneUuid='%s'" % zoneUuid
 
     zql_dict = {
+        #KVM_TOP5
         'vmCpuTop5': "query vminstance.uuid,name,cpuNum where %s return with (zwatch{resultName='CPUAllUsedUtilization',offsetAheadOfCurrentTime=1,metricName='CPUUsedUtilization',functions='average(groupBy=\"VMUuid\")', functions='top(num=5)'})" % vm_conditions,
         'vmMemTop5': "query vminstance.uuid,name,cpuNum where %s return with (zwatch{resultName='MemoryUsedInPercent',offsetAheadOfCurrentTime=1,metricName='MemoryUsedInPercent',functions='average(groupBy=\"VMUuid\")', functions='top(num=5)'})" % vm_conditions,
         'hostCpuTop5': "query host.uuid,name where %s return with (zwatch{resultName='CPUAllUsedUtilization',offsetAheadOfCurrentTime=1,metricName='CPUAllUsedUtilization',functions='average(groupBy=\"HostUuid\")', functions='top(num=5)'})" % host_conditions,
         'hostMemTop5': "query host.uuid,name where %s return with (zwatch{resultName='MemoryUsedInPercent',offsetAheadOfCurrentTime=1,metricName='MemoryUsedInPercent',functions='average(groupBy=\"HostUuid\")', functions='top(num=5)'})" % host_conditions,
-        
+        #KVM_VM_METRIC_DATA
+        'vmCpuLoad': "query vminstance.uuid where %s return with(zwatch{resultName='cpuAllUsed',metricName='CPUAllUsedUtilization',offsetAheadOfCurrentTime=310,period=10})" % vm_conditions,
+        'vmMemLoad': "query vminstance.uuid where %s return with(zwatch{resultName='memoryUsedBytes',metricName='MemoryUsedInPercent',offsetAheadOfCurrentTime=310,period=10})" % vm_conditions,
+        'vmNetIn': "query vminstance.uuid where %s return with(zwatch{resultName='networkAllInBytes',metricName='NetworkAllInBytes',offsetAheadOfCurrentTime=310,period=10})" % vm_conditions,
+        'vmNetOut': "query vminstance.uuid where %s return with(zwatch{resultName='networkAllOutBytes',metricName='NetworkAllOutBytes',offsetAheadOfCurrentTime=310,period=10})" % vm_conditions,
+        'vmDiskWrite': "query vminstance.uuid where %s return with(zwatch{resultName='diskAllWriteBytes',metricName='DiskAllWriteBytes',offsetAheadOfCurrentTime=310,period=10})" % vm_conditions,
+        'vmDiskRead': "query vminstance.uuid where %s return with(zwatch{resultName='diskAllReadBytes',metricName='DiskAllReadBytes',offsetAheadOfCurrentTime=310,period=10})" % vm_conditions,
+        #KVM_HOST_METRIC_DATA
         'hostCpuLoad': "query host.uuid where %s return with(zwatch{resultName='cpuAllUsed',metricName='CPUAllUsedUtilization',offsetAheadOfCurrentTime=310,period=10})" % host_conditions,
         'hostMemLoad': "query host.uuid where %s return with(zwatch{resultName='memoryAllUsed',metricName='MemoryUsedInPercent',offsetAheadOfCurrentTime=310,period=10})" % host_conditions,
         'hostNetIn': "query host.uuid where %s return with(zwatch{resultName='networkAllInBytes',metricName='NetworkAllInBytes',offsetAheadOfCurrentTime=310,period=10})" % host_conditions,
         'hostNetOut': "query host.uuid where %s return with(zwatch{resultName='networkAllOutBytes',metricName='NetworkAllOutBytes',offsetAheadOfCurrentTime=310,period=10})" % host_conditions,
-        'hostDiskWrite': "query host.uuid where %s return with(zwatch{resultName='diskAllWriteOps',metricName='DiskAllWriteBytes',offsetAheadOfCurrentTime=310,period=10})" % host_conditions,
-        'hostDiskRead': "query host.uuid where %s return with(zwatch{resultName='diskAllReadOps',metricName='DiskAllReadBytes',offsetAheadOfCurrentTime=310,period=10})" % host_conditions,
-        
-        'vcenterVmCpuTop5': "query vminstance.uuid,name,cpuNum where %s return with (zwatch{resultName='CPUAllUsedUtilization',namespace='ZStack/VCenter',offsetAheadOfCurrentTime=1,metricName='VmCPUUsage',functions='average(groupBy=\"VMUuid\")', functions='top(num=5)'})" % vm_conditions,
-        'vcenterVmMemTop5': "query vminstance.uuid,name,cpuNum where %s return with (zwatch{resultName='MemoryUsedInPercent',namespace='ZStack/VCenter',offsetAheadOfCurrentTime=1,metricName='VmMemoryUsage',functions='average(groupBy=\"VMUuid\")', functions='top(num=5)'})" % vm_conditions,
-        'vcenterHostCpuTop5': "query host.uuid,name where %s return with (zwatch{resultName='CPUAllUsedUtilization',namespace='ZStack/VCenter',offsetAheadOfCurrentTime=1,metricName='HostCPUUsage',functions='average(groupBy=\"HostUuid\")', functions='top(num=5)'})" % host_conditions,
-        'vcenterHostMemTop5': "query host.uuid,name where %s return with (zwatch{resultName='MemoryUsedInPercent',namespace='ZStack/VCenter',offsetAheadOfCurrentTime=1,metricName='HostMemoryUsage',functions='average(groupBy=\"HostUuid\")', functions='top(num=5)'})" % host_conditions, 
-        
+        'hostDiskWrite': "query host.uuid where %s return with(zwatch{resultName='diskAllWriteBytes',metricName='DiskAllWriteBytes',offsetAheadOfCurrentTime=310,period=10})" % host_conditions,
+        'hostDiskRead': "query host.uuid where %s return with(zwatch{resultName='diskAllReadBytes',metricName='DiskAllReadBytes',offsetAheadOfCurrentTime=310,period=10})" % host_conditions,
+        #ESX_TOP5
+        'vcenterVmCpuTop5': "query vminstance.uuid,name,cpuNum where %s return with(zwatch{resultName='CPUAllUsedUtilization',namespace='ZStack/VCenter',offsetAheadOfCurrentTime=1,metricName='VmCPUUsage',functions='average(groupBy=\"VMUuid\")', functions='top(num=5)'})" % vm_conditions,
+        'vcenterVmMemTop5': "query vminstance.uuid,name,cpuNum where %s return with(zwatch{resultName='MemoryUsedInPercent',namespace='ZStack/VCenter',offsetAheadOfCurrentTime=1,metricName='VmMemoryUsage',functions='average(groupBy=\"VMUuid\")', functions='top(num=5)'})" % vm_conditions,
+        'vcenterHostCpuTop5': "query host.uuid,name where %s return with(zwatch{resultName='CPUAllUsedUtilization',namespace='ZStack/VCenter',offsetAheadOfCurrentTime=1,metricName='HostCPUUsage',functions='average(groupBy=\"HostUuid\")', functions='top(num=5)'})" % host_conditions,
+        'vcenterHostMemTop5': "query host.uuid,name where %s return with(zwatch{resultName='MemoryUsedInPercent',namespace='ZStack/VCenter',offsetAheadOfCurrentTime=1,metricName='HostMemoryUsage',functions='average(groupBy=\"HostUuid\")', functions='top(num=5)'})" % host_conditions, 
+        #ESX_VM_METRIC_DATA
+        'vcenterVmCpuLoad': "query vminstance.uuid where %s return with(zwatch{resultName='cpuAllUsed',metricName='VmCPUUsage',namespace='ZStack/VCenter', offsetAheadOfCurrentTime=310,period=10})" % vm_conditions,
+        'vcenterVmMemLoad': "query vminstance.uuid where %s return with(zwatch{resultName='memoryUsedBytes',metricName='VmMemoryUsage',namespace='ZStack/VCenter', offsetAheadOfCurrentTime=310,period=10})" % vm_conditions,
+        'vcenterVmNetIn': "query vminstance.uuid where %s return with(zwatch{resultName='networkAllInBytes',metricName='VmNetworkReceived',namespace='ZStack/VCenter', offsetAheadOfCurrentTime=310,period=10})" % vm_conditions,
+        'vcenterVmNetOut': "query vminstance.uuid where %s return with(zwatch{resultName='networkAllOutBytes',metricName='VmNetworkTransmitted',namespace='ZStack/VCenter', offsetAheadOfCurrentTime=310,period=10})" % vm_conditions,
+        'vcenterVmDiskWrite': "query vminstance.uuid where %s return with(zwatch{resultName='diskAllWriteBytes',metricName='VmDiskWrite',namespace='ZStack/VCenter', offsetAheadOfCurrentTime=310,period=10})" % vm_conditions,
+        'vcenterVmDiskRead': "query vminstance.uuid where %s return with(zwatch{resultName='diskAllReadBytes',metricName='VmDiskRead',namespace='ZStack/VCenter', offsetAheadOfCurrentTime=310,period=10})" % vm_conditions,
+        #ESX_HOST_METRIC_DATA
         'vcenterHostCpuLoad': "query host.uuid where %s return with(zwatch{resultName='cpuAllUsed',metricName='HostCPUUsage',namespace='ZStack/VCenter',offsetAheadOfCurrentTime=310,period=10})" % host_conditions,
         'vcenterHostMemLoad': "query host.uuid where %s return with(zwatch{resultName='memoryAllUsed',metricName='HostMemoryUsage',namespace='ZStack/VCenter',offsetAheadOfCurrentTime=310,period=10})" % host_conditions,
         'vcenterHostNetIn': "query host.uuid where %s return with(zwatch{resultName='networkAllInBytes',metricName='HostNetworkReceived',namespace='ZStack/VCenter',offsetAheadOfCurrentTime=310,period=10})" % host_conditions,
         'vcenterHostNetOut': "query host.uuid where %s return with(zwatch{resultName='networkAllOutBytes',metricName='HostNetworkTransmitted',namespace='ZStack/VCenter',offsetAheadOfCurrentTime=310,period=10})" % host_conditions,
-        'vcenterHostDiskWrite': "query host.uuid where %s return with(zwatch{resultName='diskAllWriteOps',metricName='HostDiskWrite',namespace='ZStack/VCenter',offsetAheadOfCurrentTime=310,period=10})" % host_conditions,
-        'vcenterHostDiskRead': "query host.uuid where %s return with(zwatch{resultName='diskAllReadOps',metricName='HostDiskRead',namespace='ZStack/VCenter',offsetAheadOfCurrentTime=310,period=10})" % host_conditions,
+        'vcenterHostDiskWrite': "query host.uuid where %s return with(zwatch{resultName='diskAllWriteBytes',metricName='HostDiskWrite',namespace='ZStack/VCenter',offsetAheadOfCurrentTime=310,period=10})" % host_conditions,
+        'vcenterHostDiskRead': "query host.uuid where %s return with(zwatch{resultName='diskAllReadBytes',metricName='HostDiskRead',namespace='ZStack/VCenter',offsetAheadOfCurrentTime=310,period=10})" % host_conditions,
     }
     return zql_dict
 
@@ -812,18 +827,32 @@ def load_top5(zone_uuid=None):
 def get_buff_host_metric_load(zone_uuid):
     #init
     buff = {}
+    #KVM
     buff['CPU'] = {}
     buff['MEM'] = {}
     buff['NI'] = {}
     buff['NO'] = {}
     buff['W'] = {}
     buff['R'] = {}
+    buff['CPU_VM'] = {}
+    buff['MEM_VM'] = {}
+    buff['NI_VM'] = {}
+    buff['NO_VM'] = {}
+    buff['W_VM'] = {}
+    buff['R_VM'] = {}
+    #ESX+
     buff['vCPU'] = {}
     buff['vMEM'] = {}
     buff['vNI'] = {}
     buff['vNO'] = {}
     buff['vW'] = {}
     buff['vR'] = {}
+    buff['vCPU_VM'] = {}
+    buff['vMEM_VM'] = {}
+    buff['vNI_VM'] = {}
+    buff['vNO_VM'] = {}
+    buff['vW_VM'] = {}
+    buff['vR_VM'] = {}
     def buff_generator(key, res_list, avg=True):
         host_num = round(len(res_list)/32, 2)
         for res in res_list:
@@ -844,7 +873,12 @@ def get_buff_host_metric_load(zone_uuid):
         no = query_zql(aim_zstack['ip'], session_uuid, zql_dict['hostNetOut'])['results'][0]['returnWith']
         w = query_zql(aim_zstack['ip'], session_uuid, zql_dict['hostDiskWrite'])['results'][0]['returnWith']
         r = query_zql(aim_zstack['ip'], session_uuid, zql_dict['hostDiskRead'])['results'][0]['returnWith']
-
+        cpu_vm = query_zql(aim_zstack['ip'], session_uuid, zql_dict['vmCpuLoad'])['results'][0]['returnWith']
+        mem_vm = query_zql(aim_zstack['ip'], session_uuid, zql_dict['vmMemLoad'])['results'][0]['returnWith']
+        ni_vm = query_zql(aim_zstack['ip'], session_uuid, zql_dict['vmNetIn'])['results'][0]['returnWith']
+        no_vm = query_zql(aim_zstack['ip'], session_uuid, zql_dict['vmNetOut'])['results'][0]['returnWith']
+        w_vm = query_zql(aim_zstack['ip'], session_uuid, zql_dict['vmDiskWrite'])['results'][0]['returnWith']
+        r_vm = query_zql(aim_zstack['ip'], session_uuid, zql_dict['vmDiskRead'])['results'][0]['returnWith']
         if 'cpuAllUsed' in cpu.keys(): 
             cpu_list = cpu['cpuAllUsed']
             buff_generator('CPU', cpu_list)
@@ -857,12 +891,30 @@ def get_buff_host_metric_load(zone_uuid):
         if 'networkAllOutBytes' in no.keys(): 
             no_list = no['networkAllOutBytes']
             buff_generator('NO', no_list, avg=False)
-        if 'diskAllWriteOps' in w.keys(): 
-            w_list = w['diskAllWriteOps']
+        if 'diskAllWriteBytes' in w.keys(): 
+            w_list = w['diskAllWriteBytes']
             buff_generator('W', w_list, avg=False)
-        if 'diskAllReadOps' in r.keys(): 
-            r_list = r['diskAllReadOps']
+        if 'diskAllReadBytes' in r.keys(): 
+            r_list = r['diskAllReadBytes']
             buff_generator('R', r_list, avg=False)
+        if 'cpuAllUsed' in cpu_vm.keys(): 
+            cpu_list = cpu_vm['cpuAllUsed']
+            buff_generator('CPU_VM', cpu_list)
+        if 'memoryUsedBytes' in mem_vm.keys(): 
+            mem_list = mem_vm['memoryUsedBytes']
+            buff_generator('MEM_VM', mem_list)
+        if 'networkAllInBytes' in ni_vm.keys(): 
+            ni_list = ni_vm['networkAllInBytes']
+            buff_generator('NI_VM', ni_list, avg=False)
+        if 'networkAllOutBytes' in no_vm.keys(): 
+            no_list = no_vm['networkAllOutBytes']
+            buff_generator('NO_VM', no_list, avg=False)
+        if 'diskAllWriteBytes' in w_vm.keys(): 
+            w_list = w_vm['diskAllWriteBytes']
+            buff_generator('W_VM', w_list, avg=False)
+        if 'diskAllReadBytes' in r_vm.keys(): 
+            r_list = r_vm['diskAllReadBytes']
+            buff_generator('R_VM', r_list, avg=False)
         #ESX
         v_zql_dict = zql_generator('ESX', zone_uuid)
         v_cpu = query_zql(aim_zstack['ip'], session_uuid, v_zql_dict['vcenterHostCpuLoad'])['results'][0]['returnWith']
@@ -871,6 +923,12 @@ def get_buff_host_metric_load(zone_uuid):
         v_no = query_zql(aim_zstack['ip'], session_uuid, v_zql_dict['vcenterHostNetOut'])['results'][0]['returnWith']
         v_w = query_zql(aim_zstack['ip'], session_uuid, v_zql_dict['vcenterHostDiskWrite'])['results'][0]['returnWith']
         v_r = query_zql(aim_zstack['ip'], session_uuid, v_zql_dict['vcenterHostDiskRead'])['results'][0]['returnWith']
+        v_cpu_vm = query_zql(aim_zstack['ip'], session_uuid, v_zql_dict['vcenterVmCpuLoad'])['results'][0]['returnWith']
+        v_mem_vm = query_zql(aim_zstack['ip'], session_uuid, v_zql_dict['vcenterVmMemLoad'])['results'][0]['returnWith']
+        v_ni_vm = query_zql(aim_zstack['ip'], session_uuid, v_zql_dict['vcenterVmNetIn'])['results'][0]['returnWith']
+        v_no_vm = query_zql(aim_zstack['ip'], session_uuid, v_zql_dict['vcenterVmNetOut'])['results'][0]['returnWith']
+        v_w_vm = query_zql(aim_zstack['ip'], session_uuid, v_zql_dict['vcenterVmDiskWrite'])['results'][0]['returnWith']
+        v_r_vm = query_zql(aim_zstack['ip'], session_uuid, v_zql_dict['vcenterVmDiskRead'])['results'][0]['returnWith']
 
         if 'cpuAllUsed' in v_cpu.keys(): 
             v_cpu_list = v_cpu['cpuAllUsed']
@@ -884,12 +942,30 @@ def get_buff_host_metric_load(zone_uuid):
         if 'networkAllOutBytes' in v_no.keys(): 
             v_no_list = v_no['networkAllOutBytes']
             buff_generator('vNO', v_no_list, avg=False)
-        if 'diskAllWriteOps' in v_w.keys(): 
-            v_w_list = v_w['diskAllWriteOps']
+        if 'diskAllWriteBytes' in v_w.keys(): 
+            v_w_list = v_w['diskAllWriteBytes']
             buff_generator('vW', v_w_list, avg=False)
-        if 'diskAllReadOps' in v_r.keys(): 
-            v_r_list = v_r['diskAllReadOps']
+        if 'diskAllReadBytes' in v_r.keys(): 
+            v_r_list = v_r['diskAllReadBytes']
             buff_generator('vR', v_r_list, avg=False)
+        if 'cpuAllUsed' in v_cpu_vm.keys(): 
+            v_cpu_list = v_cpu_vm['cpuAllUsed']
+            buff_generator('vCPU_VM', v_cpu_list)
+        if 'memoryUsedBytes' in v_mem_vm.keys(): 
+            v_mem_list = v_mem_vm['memoryUsedBytes']
+            buff_generator('vMEM_VM', v_mem_list)
+        if 'networkAllInBytes' in v_ni_vm.keys(): 
+            v_ni_list = v_ni_vm['networkAllInBytes']
+            buff_generator('vNI_VM', v_ni_list, avg=False)
+        if 'networkAllOutBytes' in v_no_vm.keys(): 
+            v_no_list = v_no_vm['networkAllOutBytes']
+            buff_generator('vNO_VM', v_no_list, avg=False)
+        if 'diskAllWriteBytes' in v_w_vm.keys(): 
+            v_w_list = v_w_vm['diskAllWriteBytes']
+            buff_generator('vW_VM', v_w_list, avg=False)
+        if 'diskAllReadBytes' in v_r_vm.keys(): 
+            v_r_list = v_r_vm['diskAllReadBytes']
+            buff_generator('vR_VM', v_r_list, avg=False)
         return buff
     finally:
         logout(aim_zstack['ip'], session_uuid)
@@ -922,6 +998,18 @@ def host_metric_load(zone_uuid=None):
     print_time_value(buff_loads['W'], mode='Bytes')
     print "\n-总物理机磁盘IO/读取"
     print_time_value(buff_loads['R'], mode='Bytes')
+    print "\n-总云主机CPU使用率"
+    print_time_value(buff_loads['CPU_VM'])
+    print "\n-总云主机内存使用率"
+    print_time_value(buff_loads['MEM_VM'])
+    print "\n-总云主机网络吞吐/接收"
+    print_time_value(buff_loads['NI_VM'], mode='Bytes')
+    print "\n-总云主机网络吞吐/发送"
+    print_time_value(buff_loads['NO_VM'], mode='Bytes')
+    print "\n-总云主机磁盘IO/写入"
+    print_time_value(buff_loads['W_VM'], mode='Bytes')
+    print "\n-总云主机磁盘IO/读取"
+    print_time_value(buff_loads['R_VM'], mode='Bytes')
     #ESX
     print "\n--VCenter负载统计--"
     print "-总物理机CPU使用率"
@@ -936,6 +1024,18 @@ def host_metric_load(zone_uuid=None):
     print_time_value(buff_loads['vW'], mode='Bytes')
     print "\n-总物理机磁盘IO/读取"
     print_time_value(buff_loads['vR'], mode='Bytes')
+    print "\n-总云主机CPU使用率"
+    print_time_value(buff_loads['vCPU_VM'])
+    print "\n-总云主机内存使用率"
+    print_time_value(buff_loads['vMEM_VM'])
+    print "\n-总云主机网络吞吐/接收"
+    print_time_value(buff_loads['vNI_VM'], mode='Bytes')
+    print "\n-总云主机网络吞吐/发送"
+    print_time_value(buff_loads['vNO_VM'], mode='Bytes')
+    print "\n-总云主机磁盘IO/写入"
+    print_time_value(buff_loads['vW_VM'], mode='Bytes')
+    print "\n-总云主机磁盘IO/读取"
+    print_time_value(buff_loads['vR_VM'], mode='Bytes')
 
 def main(argv):
     try:
