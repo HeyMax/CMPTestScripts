@@ -12,8 +12,8 @@ zstack_list = [#{'ip':"172.20.16.236", 'account':'admin', 'passwd':'Dw199719'},
                {'ip':"172.20.1.15",'account':'admin', 'passwd':'password', 'name':'1.15'},
                {'ip':"172.20.0.10",'account':'admin', 'passwd':'ZStack%SHYZ_6#418', 'name':'云轴开发平台'}]
 
-aim_zstack = {'ip':"172.20.1.15",'account':'admin', 'passwd':'password', 'name':'1.15'}
-#aim_zstack = {'ip':"172.20.14.103",'account':'admin', 'passwd':'password', 'name':'14.103'}
+#aim_zstack = {'ip':"172.20.1.15",'account':'admin', 'passwd':'password', 'name':'1.15'}
+aim_zstack = {'ip':"172.20.14.103",'account':'admin', 'passwd':'password', 'name':'14.103'}
 
 def zql_generator(hypervisorType, zoneUuid):
     vm_conditions = "state='Running' and type='UserVm' and hypervisorType='%s'" % hypervisorType
