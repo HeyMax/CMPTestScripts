@@ -9,8 +9,14 @@ import urllib
 
 zstack_list = [#{'ip':"172.20.16.236", 'account':'admin', 'passwd':'Dw199719'}, 
                #{'ip':"172.20.16.236",'account':'admin', 'passwd':'password', 'name':'16.236'}, 
-               {'ip':"172.20.1.15",'account':'admin', 'passwd':'password', 'name':'1.15'},
-               {'ip':"172.20.0.10",'account':'admin', 'passwd':'ZStack%SHYZ_6#418', 'name':'云轴开发平台'}]
+               {'ip':"172.20.14.103",'account':'admin', 'passwd':'password', 'name':'14.103'},
+               {'ip':"172.20.16.69",'account':'admin', 'passwd':'password', 'name':'16.69'},
+               {'ip':"172.20.16.181",'account':'admin', 'passwd':'password', 'name':'16.181'},
+               {'ip':"172.20.16.128",'account':'admin', 'passwd':'password', 'name':'16.128'},
+               {'ip':"172.20.83.240",'account':'admin', 'passwd':'password', 'name':'83.240'},]
+
+               #{'ip':"172.20.1.15",'account':'admin', 'passwd':'password', 'name':'1.15'},
+               #{'ip':"172.20.0.10",'account':'admin', 'passwd':'ZStack%SHYZ_6#418', 'name':'云轴开发平台'}]
 
 #aim_zstack = {'ip':"172.20.1.15",'account':'admin', 'passwd':'password', 'name':'1.15'}
 aim_zstack = {'ip':"172.20.14.103",'account':'admin', 'passwd':'password', 'name':'14.103'}
@@ -658,17 +664,20 @@ def get_buff_rsu(mode, zone_uuid, avg):
             if v_sum_total_pri_ip_v4[0]: buff['v_IP_pri_v4']['sum'] = round((float(v_sum_used_pri_ip_v4[0])/float(v_sum_total_pri_ip_v4[0])) * 100, 2)
             if v_sum_total_pub_ip_v4[0]: buff['v_IP_pub_v4']['sum'] = round((float(v_sum_used_pub_ip_v4[0])/float(v_sum_total_pub_ip_v4[0])) * 100, 2)
             if v_sum_total_pri_ip_v6[0]: buff['v_IP_pri_v6']['sum'] = round((float(v_sum_used_pri_ip_v6[0])/float(v_sum_total_pri_ip_v6[0])) * 100, 2)
-            if v_sum_total_pub_ip_v6[0]: buff['v_IP_pub_v6']['sum'] = round((float(v_sum_used_pub_ip_v6[0])/float(v_sum_total_pub_ip_v6[0])) * 100, 2)
-        elif avg == 'percent':
-            def sum_generator(dict):
-                for k in dict.keys():
-                    dict['sum'] += dict[k]
-                dict['sum'] = round(float(dict['sum'])/float(len(dict.keys())-1), 2)
-            for key in buff.keys():
-                sum_generator(buff[key])            
+            if v_sum_total_pub_ip_v6[0]: buff['v_IP_pub_v6']['sum'] = round((float(v_sum_used_pub_ip_v6[0])/float(v_sum_total_pub_ip_v6[0])) * 100, 2)            
     if mode == 'all':
         for zstack in zstack_list:
             buff_generator(zstack, zone_uuid)
+        if avg == 'percent':
+            zstack_num = len(zstack_list)
+            def sum_generator(dict):
+                keys = dict.keys()
+                keys.remove('sum')
+                for k in keys:
+                    dict['sum'] += dict[k]
+                dict['sum'] = round(float(dict['sum'])/float(zstack_num), 2)
+            for key in buff.keys():
+                sum_generator(buff[key])
     elif mode == 'single':
         buff_generator(aim_zstack, zone_uuid)
     return buff
