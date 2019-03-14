@@ -426,7 +426,7 @@ def overview(mode='all', zone_uuid=None):
     print "-镜像\n 总数: %s\n 启用: %s\n 停用: %s\n 其他: %s\n" % (buff_overview['v_Image']['Sum'], buff_overview['v_Image']['Enabled'], buff_overview['v_Image']['Disabled'], buff_overview['v_Image']['Other'])
     if mode == 'single': print "-集群\n 总数: %s\n 启用: %s\n 停用: %s\n 其他: %s\n" % (buff_overview['v_Cluster']['Sum'], buff_overview['v_Cluster']['Enabled'], buff_overview['v_Cluster']['Disabled'], buff_overview['v_Cluster']['Other'])
 
-def get_buff_rsu(mode, zone_uuid):
+def get_buff_rsu(mode, zone_uuid, avg):
     buff = {}
     #KVM
     buff['CPU'] = {}
@@ -640,24 +640,32 @@ def get_buff_rsu(mode, zone_uuid):
 
         finally:
             logout(zstack['ip'],session_uuid)
-        #KVM
-        if sum_total_cpu[0]: buff['CPU']['sum'] = round((float(sum_used_cpu[0])/float(sum_total_cpu[0])) * 100, 2)
-        if sum_total_mem[0]: buff['MEM']['sum'] = round((float(sum_used_mem[0])/float(sum_total_mem[0])) * 100, 2)
-        if sum_total_ps[0]: buff['PS']['sum'] = round((float(sum_used_ps[0])/float(sum_total_ps[0])) * 100, 2)
-        if sum_total_bs[0]: buff['BS']['sum'] = round((float(sum_used_bs[0])/float(sum_total_bs[0])) * 100, 2)
-        if sum_total_pri_ip_v4[0]: buff['IP_pri_v4']['sum'] = round((float(sum_used_pri_ip_v4[0])/float(sum_total_pri_ip_v4[0])) * 100, 2)
-        if sum_total_pub_ip_v4[0]: buff['IP_pub_v4']['sum'] = round((float(sum_used_pub_ip_v4[0])/float(sum_total_pub_ip_v4[0])) * 100, 2)
-        if sum_total_pri_ip_v6[0]: buff['IP_pri_v6']['sum'] = round((float(sum_used_pri_ip_v6[0])/float(sum_total_pri_ip_v6[0])) * 100, 2)
-        if sum_total_pub_ip_v6[0]: buff['IP_pub_v6']['sum'] = round((float(sum_used_pub_ip_v6[0])/float(sum_total_pub_ip_v6[0])) * 100, 2)
-        #ESX
-        if v_sum_total_cpu[0]: buff['v_CPU']['sum'] = round((float(v_sum_used_cpu[0])/float(v_sum_total_cpu[0])) * 100, 2)
-        if v_sum_total_mem[0]: buff['v_MEM']['sum'] = round((float(v_sum_used_mem[0])/float(v_sum_total_mem[0])) * 100, 2)
-        if v_sum_total_ps[0]: buff['v_PS']['sum'] = round((float(v_sum_used_ps[0])/float(v_sum_total_ps[0])) * 100, 2)
-        if v_sum_total_bs[0]: buff['v_BS']['sum'] = round((float(v_sum_used_bs[0])/float(v_sum_total_bs[0])) * 100, 2)
-        if v_sum_total_pri_ip_v4[0]: buff['v_IP_pri_v4']['sum'] = round((float(v_sum_used_pri_ip_v4[0])/float(v_sum_total_pri_ip_v4[0])) * 100, 2)
-        if v_sum_total_pub_ip_v4[0]: buff['v_IP_pub_v4']['sum'] = round((float(v_sum_used_pub_ip_v4[0])/float(v_sum_total_pub_ip_v4[0])) * 100, 2)
-        if v_sum_total_pri_ip_v6[0]: buff['v_IP_pri_v6']['sum'] = round((float(v_sum_used_pri_ip_v6[0])/float(v_sum_total_pri_ip_v6[0])) * 100, 2)
-        if v_sum_total_pub_ip_v6[0]: buff['v_IP_pub_v6']['sum'] = round((float(v_sum_used_pub_ip_v6[0])/float(v_sum_total_pub_ip_v6[0])) * 100, 2)
+        if avg == 'rsu':
+            #KVM
+            if sum_total_cpu[0]: buff['CPU']['sum'] = round((float(sum_used_cpu[0])/float(sum_total_cpu[0])) * 100, 2)
+            if sum_total_mem[0]: buff['MEM']['sum'] = round((float(sum_used_mem[0])/float(sum_total_mem[0])) * 100, 2)
+            if sum_total_ps[0]: buff['PS']['sum'] = round((float(sum_used_ps[0])/float(sum_total_ps[0])) * 100, 2)
+            if sum_total_bs[0]: buff['BS']['sum'] = round((float(sum_used_bs[0])/float(sum_total_bs[0])) * 100, 2)
+            if sum_total_pri_ip_v4[0]: buff['IP_pri_v4']['sum'] = round((float(sum_used_pri_ip_v4[0])/float(sum_total_pri_ip_v4[0])) * 100, 2)
+            if sum_total_pub_ip_v4[0]: buff['IP_pub_v4']['sum'] = round((float(sum_used_pub_ip_v4[0])/float(sum_total_pub_ip_v4[0])) * 100, 2)
+            if sum_total_pri_ip_v6[0]: buff['IP_pri_v6']['sum'] = round((float(sum_used_pri_ip_v6[0])/float(sum_total_pri_ip_v6[0])) * 100, 2)
+            if sum_total_pub_ip_v6[0]: buff['IP_pub_v6']['sum'] = round((float(sum_used_pub_ip_v6[0])/float(sum_total_pub_ip_v6[0])) * 100, 2)
+            #ESX
+            if v_sum_total_cpu[0]: buff['v_CPU']['sum'] = round((float(v_sum_used_cpu[0])/float(v_sum_total_cpu[0])) * 100, 2)
+            if v_sum_total_mem[0]: buff['v_MEM']['sum'] = round((float(v_sum_used_mem[0])/float(v_sum_total_mem[0])) * 100, 2)
+            if v_sum_total_ps[0]: buff['v_PS']['sum'] = round((float(v_sum_used_ps[0])/float(v_sum_total_ps[0])) * 100, 2)
+            if v_sum_total_bs[0]: buff['v_BS']['sum'] = round((float(v_sum_used_bs[0])/float(v_sum_total_bs[0])) * 100, 2)
+            if v_sum_total_pri_ip_v4[0]: buff['v_IP_pri_v4']['sum'] = round((float(v_sum_used_pri_ip_v4[0])/float(v_sum_total_pri_ip_v4[0])) * 100, 2)
+            if v_sum_total_pub_ip_v4[0]: buff['v_IP_pub_v4']['sum'] = round((float(v_sum_used_pub_ip_v4[0])/float(v_sum_total_pub_ip_v4[0])) * 100, 2)
+            if v_sum_total_pri_ip_v6[0]: buff['v_IP_pri_v6']['sum'] = round((float(v_sum_used_pri_ip_v6[0])/float(v_sum_total_pri_ip_v6[0])) * 100, 2)
+            if v_sum_total_pub_ip_v6[0]: buff['v_IP_pub_v6']['sum'] = round((float(v_sum_used_pub_ip_v6[0])/float(v_sum_total_pub_ip_v6[0])) * 100, 2)
+        elif avg == 'percent':
+            def sum_generator(dict):
+                for k in dict.keys():
+                    dict['sum'] += dict[k]
+                dict['sum'] = round(float(dict['sum'])/float(len(dict.keys())-1), 2)
+            for key in buff.keys():
+                sum_generator(buff[key])            
     if mode == 'all':
         for zstack in zstack_list:
             buff_generator(zstack, zone_uuid)
@@ -665,8 +673,9 @@ def get_buff_rsu(mode, zone_uuid):
         buff_generator(aim_zstack, zone_uuid)
     return buff
     
-def resource_used(mode='all', zone_uuid=None):
-    buff_rsu = get_buff_rsu(mode, zone_uuid)
+def resource_used(mode='all', zone_uuid=None, avg='rsu'):
+    #buff_rsu = get_buff_rsu(mode, zone_uuid)
+    buff_rsu = get_buff_rsu(mode,zone_uuid,avg)
     #KVM
     print "--KVM用量统计--"
     print " CPU: %s%%\n 内存: %s%%\n 主存储: %s%%\n 镜像服务器: %s%%\n 私网IP_v4: %s%%\n 公网IP_v4: %s%%\n 私网IP_v6: %s%%\n 公网IP_v6: %s%% " % (buff_rsu['CPU']['sum'], \
@@ -753,8 +762,8 @@ def host_load(mode='all'):
     print "\n-物理机磁盘IO/读取:"
     print_topN(buff_hl['R'], mode = 'Bytes')
 
-def zstack_topN(mode='all', zone_uuid=None):
-    buff_zstack = get_buff_rsu(mode, zone_uuid)
+def zstack_topN(mode='all', zone_uuid=None, avg='rsu'):
+    buff_zstack = get_buff_rsu(mode, zone_uuid, avg)
     buff_zstack['CPU'].pop('sum')
     buff_zstack['MEM'].pop('sum')
     buff_zstack['PS'].pop('sum')
@@ -1052,7 +1061,7 @@ def main(argv):
             #resource_overview
             overview()
             #resource_used
-            resource_used()
+            resource_used(avg='percent')
             #host_load
             host_load()
             #zstack_topN
